@@ -144,10 +144,8 @@ func (t *Trix) Update(updateRange string, values [][]interface{}) (*sheets.Updat
 }
 
 //InsertRow inserts a row of values at the bottom of the spreadsheet
-func (t *Trix) InsertRow(values [][]interface{}) (*sheets.UpdateValuesResponse, error) {
-	readRange := "RSVP!A:C"
-
-	readResp, err := t.Get(readRange)
+func (t *Trix) InsertRow(sheet string, values [][]interface{}) (*sheets.UpdateValuesResponse, error) {
+	readResp, err := t.Get(sheet)
 	if err != nil || len(readResp.Values) < 1 {
 		log.Println("No Values.", err)
 		return nil, err
@@ -158,7 +156,7 @@ func (t *Trix) InsertRow(values [][]interface{}) (*sheets.UpdateValuesResponse, 
 	}
 
 	writeRow := len(readResp.Values) + 1
-	updateRange := fmt.Sprintf("RSVP!A%d:C%d", writeRow, writeRow)
+	updateRange := fmt.Sprintf("%v!%d:%d", sheet, writeRow, writeRow)
 
 	updateResp, err := t.Update(updateRange, values)
 	if err != nil {
